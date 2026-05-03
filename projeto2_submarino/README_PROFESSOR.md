@@ -7,6 +7,10 @@
 > reprodução em `tools/render_for_report.py`), em resolução 1600×900,
 > sem qualquer pós-processamento.
 
+Feito por:
+**Enzo Tonon Morente - 14568476**
+**Cauê Paiva Lira - 14675416**
+
 ![Capa: vista isométrica do cenário](build/report/hero.png)
 
 ---

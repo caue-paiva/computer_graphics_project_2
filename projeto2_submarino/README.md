@@ -4,6 +4,10 @@
 >
 > Este documento foi escrito para ser autossuficiente: lendo só o README dá pra entender **o que o projeto é, como rodar, como cada peça do código foi implementada e por que cada decisão foi tomada**. Se você é a dupla pegando o projeto agora, o roteiro é: ler a seção 1 pra contexto, depois seguir a ordem das seções 2 → 11, e usar a 12 como referência rápida quando precisar mexer em alguma coisa.
 
+Feito por:
+**Enzo Tonon Morente - 14568476**
+**Cauê Paiva Lira - 14675416**
+
 ---
 
 ## Sumário
