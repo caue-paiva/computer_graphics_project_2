@@ -314,7 +314,7 @@ def main() -> int:
     RESET = "\033[0m"
     controls = (
         "[main] controls: WASD + Space/Shift, mouse look, P=wireframe, "
-        "[/] orca scale, R/Q beluga rotate, T/G/F/H chair translate, Esc"
+        "[ or ] orca scale, R/Q beluga rotate, T/G/F/H chair translate, Esc"
     )
     print("[main] starting submarine scene")
     print(f"{GREEN}{controls}{RESET}")
