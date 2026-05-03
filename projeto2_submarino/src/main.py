@@ -129,6 +129,8 @@ class App:
         self._last_rbracket_press = 0.0   # aumentar  orca "]"
         self._last_r_press = 0.0          # beluga: passo no sentido positivo "R"
         self._last_q_press = 0.0          # beluga: passo no sentido negativo "Q"
+        self._last_t_press = 0.0          # joystick: translação +X "T"
+        self._last_g_press = 0.0          # joystick: translação -X "G"
 
     # ---------------- callbacks ---------------- #
 
@@ -241,6 +243,16 @@ class App:
             if now - self._last_q_press > 0.12:
                 self.scene.rotate_beluga_step(-self.scene.BELUGA_ROTATION_STEP)
                 self._last_q_press = now
+
+        # Translação do joystick: T move em +X, G move em -X.
+        if glfw.get_key(win, glfw.KEY_T) == glfw.PRESS:
+            if now - self._last_t_press > 0.12:
+                self.scene.translate_joystick_step(self.scene.JOYSTICK_TRANSLATE_STEP)
+                self._last_t_press = now
+        if glfw.get_key(win, glfw.KEY_G) == glfw.PRESS:
+            if now - self._last_g_press > 0.12:
+                self.scene.translate_joystick_step(-self.scene.JOYSTICK_TRANSLATE_STEP)
+                self._last_g_press = now
 
     # ---------------- main loop ---------------- #
 

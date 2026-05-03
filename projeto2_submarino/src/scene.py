@@ -526,6 +526,8 @@ class SceneState:
     # rotação a partir do tempo) garante que o ângulo só muda em
     # resposta a input — não há rotação contínua.
     beluga_rotation_angle: float = 0.0
+    # Deslocamento acumulado em X do joystick, controlado por T/G.
+    joystick_translate_x: float = 0.0
 
 
 class Scene:
@@ -861,19 +863,18 @@ class Scene:
         joystick_target_x = 0.0
         joystick_target_base_y = 4.10
         joystick_target_z = chair_z + 2.10
-        self.objects.append(Object3D(
+        self.joystick_base_translation = (
+            joystick_target_x - joystick_local_center_x * joystick_scale,
+            joystick_target_base_y - joystick_local_base_y * joystick_scale,
+            joystick_target_z - joystick_local_center_z * joystick_scale,
+        )
+        self.joystick_obj = Object3D(
             model=models["joystick"],
-            translation=(
-                # Mesma fórmula da cadeira: alvo no mundo - centro
-                # local * escala, garantindo que o centro do AABB
-                # encoste exatamente no ponto desejado.
-                joystick_target_x - joystick_local_center_x * joystick_scale,
-                joystick_target_base_y - joystick_local_base_y * joystick_scale,
-                joystick_target_z - joystick_local_center_z * joystick_scale,
-            ),
+            translation=self.joystick_base_translation,
             rotation_y=0.0,
             scale_xyz=(joystick_scale, joystick_scale, joystick_scale),
-        ))
+        )
+        self.objects.append(self.joystick_obj)
 
         # Estado interativo (escala da orca, rotação da beluga).
         self.state = SceneState()
@@ -1252,10 +1253,24 @@ class Scene:
             self.beluga_base_rotation_y + self.state.beluga_rotation_angle
         )
 
+    JOYSTICK_TRANSLATE_STEP = 0.15  # metros por disparo
+
+    def translate_joystick_step(self, delta_x: float | None = None) -> None:
+        """Translada o joystick em X por um passo fixo (clamp ±0.5m)."""
+        step = self.JOYSTICK_TRANSLATE_STEP if delta_x is None else delta_x
+        self.state.joystick_translate_x = max(
+            -0.5, min(0.5, self.state.joystick_translate_x + step)
+        )
+        bx, by, bz = self.joystick_base_translation
+        self.joystick_obj.translation = (
+            bx + self.state.joystick_translate_x, by, bz
+        )
+
     def update(self, dt: float) -> None:
         # Nenhuma animação contínua: toda atualização de estado é
         # disparada diretamente por eventos discretos de teclado
-        # (``adjust_orca_scale`` e ``rotate_beluga_step``).
+        # (``adjust_orca_scale``, ``rotate_beluga_step`` e
+        # ``translate_joystick_step``).
         # Mantemos o método para preservar a interface do loop
         # principal (``self.scene.update(dt)`` em main.py) e
         # facilitar a adição futura de animações temporais.
