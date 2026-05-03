@@ -526,8 +526,9 @@ class SceneState:
     # rotação a partir do tempo) garante que o ângulo só muda em
     # resposta a input — não há rotação contínua.
     beluga_rotation_angle: float = 0.0
-    # Deslocamento acumulado em X do joystick, controlado por T/G.
-    joystick_translate_x: float = 0.0
+    # Deslocamento acumulado da cadeira no plano XZ, controlado por T/G/F/H.
+    chair_translate_x: float = 0.0
+    chair_translate_z: float = 0.0
 
 
 class Scene:
@@ -780,17 +781,14 @@ class Scene:
         chair_local_center_z = (-5.19 + -1.65) / 2.0  # ≈ -3.42
         chair_y = chair_floor_y - chair_local_base_y * chair_scale
         chair_z = cockpit_chair_z - chair_local_center_z * chair_scale
-        self.objects.append(Object3D(
+        self.chair_base_translation = (0.0, chair_y, chair_z + 2.0)
+        self.chair_obj = Object3D(
             model=models["cadeira"],
-            # ``+2.0`` desloca a cadeira mais para a proa, encostando
-            # a costas no fim do corredor para deixar mais espaço de
-            # ergonomia entre cadeira e console.
-            translation=(0.0, chair_y, chair_z + 2.0),
-            # Rotação 0: o "para frente" do modelo já é +Z (modelo
-            # foi exportado encarando para a proa).
+            translation=self.chair_base_translation,
             rotation_y=math.radians(0.0),
             scale_xyz=(chair_scale, chair_scale, chair_scale),
-        ))
+        )
+        self.objects.append(self.chair_obj)
 
         # ---- Estação de monitoramento (console à frente da cadeira) -
         # ``estacao.obj`` é composta de duas submalhas:
@@ -863,18 +861,16 @@ class Scene:
         joystick_target_x = 0.0
         joystick_target_base_y = 4.10
         joystick_target_z = chair_z + 2.10
-        self.joystick_base_translation = (
-            joystick_target_x - joystick_local_center_x * joystick_scale,
-            joystick_target_base_y - joystick_local_base_y * joystick_scale,
-            joystick_target_z - joystick_local_center_z * joystick_scale,
-        )
-        self.joystick_obj = Object3D(
+        self.objects.append(Object3D(
             model=models["joystick"],
-            translation=self.joystick_base_translation,
+            translation=(
+                joystick_target_x - joystick_local_center_x * joystick_scale,
+                joystick_target_base_y - joystick_local_base_y * joystick_scale,
+                joystick_target_z - joystick_local_center_z * joystick_scale,
+            ),
             rotation_y=0.0,
             scale_xyz=(joystick_scale, joystick_scale, joystick_scale),
-        )
-        self.objects.append(self.joystick_obj)
+        ))
 
         # Estado interativo (escala da orca, rotação da beluga).
         self.state = SceneState()
@@ -1253,17 +1249,15 @@ class Scene:
             self.beluga_base_rotation_y + self.state.beluga_rotation_angle
         )
 
-    JOYSTICK_TRANSLATE_STEP = 0.15  # metros por disparo
+    CHAIR_TRANSLATE_STEP = 0.20  # metros por disparo
 
-    def translate_joystick_step(self, delta_x: float | None = None) -> None:
-        """Translada o joystick em X por um passo fixo (clamp ±0.5m)."""
-        step = self.JOYSTICK_TRANSLATE_STEP if delta_x is None else delta_x
-        self.state.joystick_translate_x = max(
-            -0.5, min(0.5, self.state.joystick_translate_x + step)
-        )
-        bx, by, bz = self.joystick_base_translation
-        self.joystick_obj.translation = (
-            bx + self.state.joystick_translate_x, by, bz
+    def translate_chair_step(self, dx: float = 0.0, dz: float = 0.0) -> None:
+        """Translada a cadeira no plano XZ (clamp ±1m)."""
+        self.state.chair_translate_x = max(-1.0, min(1.0, self.state.chair_translate_x + dx))
+        self.state.chair_translate_z = max(-1.0, min(1.0, self.state.chair_translate_z + dz))
+        bx, by, bz = self.chair_base_translation
+        self.chair_obj.translation = (
+            bx + self.state.chair_translate_x, by, bz + self.state.chair_translate_z
         )
 
     def update(self, dt: float) -> None:

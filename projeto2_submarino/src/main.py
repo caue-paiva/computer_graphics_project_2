@@ -129,8 +129,10 @@ class App:
         self._last_rbracket_press = 0.0   # aumentar  orca "]"
         self._last_r_press = 0.0          # beluga: passo no sentido positivo "R"
         self._last_q_press = 0.0          # beluga: passo no sentido negativo "Q"
-        self._last_t_press = 0.0          # joystick: translação +X "T"
-        self._last_g_press = 0.0          # joystick: translação -X "G"
+        self._last_t_press = 0.0          # cadeira: translação +Z "T"
+        self._last_g_press = 0.0          # cadeira: translação -Z "G"
+        self._last_f_press = 0.0          # cadeira: translação +X "F"
+        self._last_h_press = 0.0          # cadeira: translação -X "H"
 
     # ---------------- callbacks ---------------- #
 
@@ -244,15 +246,24 @@ class App:
                 self.scene.rotate_beluga_step(-self.scene.BELUGA_ROTATION_STEP)
                 self._last_q_press = now
 
-        # Translação do joystick: T move em +X, G move em -X.
+        # Translação da cadeira: T=+Z, G=-Z, F=+X, H=-X.
+        step = self.scene.CHAIR_TRANSLATE_STEP
         if glfw.get_key(win, glfw.KEY_T) == glfw.PRESS:
             if now - self._last_t_press > 0.12:
-                self.scene.translate_joystick_step(self.scene.JOYSTICK_TRANSLATE_STEP)
+                self.scene.translate_chair_step(dz=step)
                 self._last_t_press = now
         if glfw.get_key(win, glfw.KEY_G) == glfw.PRESS:
             if now - self._last_g_press > 0.12:
-                self.scene.translate_joystick_step(-self.scene.JOYSTICK_TRANSLATE_STEP)
+                self.scene.translate_chair_step(dz=-step)
                 self._last_g_press = now
+        if glfw.get_key(win, glfw.KEY_F) == glfw.PRESS:
+            if now - self._last_f_press > 0.12:
+                self.scene.translate_chair_step(dx=step)
+                self._last_f_press = now
+        if glfw.get_key(win, glfw.KEY_H) == glfw.PRESS:
+            if now - self._last_h_press > 0.12:
+                self.scene.translate_chair_step(dx=-step)
+                self._last_h_press = now
 
     # ---------------- main loop ---------------- #
 
@@ -299,12 +310,18 @@ class App:
 def main() -> int:
     # Imprime os controles no terminal para o usuário não precisar
     # adivinhar o que cada tecla faz na primeira execução.
-    print("[main] starting submarine scene")
-    print(
+    GREEN = "\033[32m"
+    RESET = "\033[0m"
+    controls = (
         "[main] controls: WASD + Space/Shift, mouse look, P=wireframe, "
-        "[/] orca scale, R/Q beluga rotate (hold to keep rotating), Esc"
+        "[/] orca scale, R/Q beluga rotate, T/G/F/H chair translate, Esc"
     )
-    App().run()
+    print("[main] starting submarine scene")
+    print(f"{GREEN}{controls}{RESET}")
+    app = App()
+    # Repete os controles após os logs de carregamento para facilitar a leitura.
+    print(f"{GREEN}{controls}{RESET}")
+    app.run()
     return 0
 
 
