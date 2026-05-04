@@ -2,10 +2,6 @@
 
 **SCC0250, Computação Gráfica · 2026.1 · ICMC-USP**
 
-> Documento de entrega resumido. Todos os screenshots abaixo são frames
-> reais renderizados pelo próprio engine do projeto, em resolução
-> 1600×900, sem qualquer pós-processamento.
-
 Feito por:
 **Enzo Tonon Morente - 14568476**
 **Cauê Paiva Lira - 14675416**
