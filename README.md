@@ -32,6 +32,7 @@ Pontos centrais da implementação:
 
 | | |
 |---|---|
+| Linguagem | Python 3.12, importante respeitar a versão, pois certas depedências não funcionam ainda no Python 3.13+ | 
 | Engine | OpenGL 3.3 core, **sem nenhuma chamada de pipeline fixo** (sem `glRotate`/`glTranslate`/`glScale`/`glBegin/End`/`glPushMatrix`) |
 | Matrizes | Tudo montado à mão em `numpy` e enviado como `mat4` uniform aos shaders |
 | Iluminação | Pipeline *unlit*: cor por pixel = amostra de textura difusa |
@@ -44,11 +45,12 @@ Pontos centrais da implementação:
 ## 2. Como executar
 
 ```bash
-cd projeto2_submarino
-python -m venv .venv
+git clone https://github.com/caue-paiva/computer_graphics_project_2 # clonar o projeto 
+cd computer_graphics_project_2 # entrar no diretório do projeto
+python -m venv .venv # criar ambiente virtual
 source .venv/bin/activate              # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-python src/main.py
+pip install -r requirements.txt   # instalar bibliotecas
+python src/main.py  # executar o projeto
 ```
 
 Testado em **macOS 25.3** (Apple Silicon) e **Ubuntu 22.04** com
@@ -232,7 +234,7 @@ O loader em `src/model.py` parseia `usemtl` e emite uma
 ## 9. Estrutura técnica resumida
 
 ```
-projeto2_submarino/
+computer_graphics_project_2/
 ├── src/                  ← runtime (~2 420 linhas de Python)
 │   ├── main.py             janela GLFW + input + loop principal
 │   ├── camera.py           câmera FPS (yaw/pitch + clamp + bounds)
