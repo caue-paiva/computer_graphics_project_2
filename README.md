@@ -3,9 +3,8 @@
 **SCC0250, Computação Gráfica · 2026.1 · ICMC-USP**
 
 > Documento de entrega resumido. Todos os screenshots abaixo são frames
-> reais renderizados pelo próprio engine do projeto (script de
-> reprodução em `tools/render_for_report.py`), em resolução 1600×900,
-> sem qualquer pós-processamento.
+> reais renderizados pelo próprio engine do projeto, em resolução
+> 1600×900, sem qualquer pós-processamento.
 
 Feito por:
 **Enzo Tonon Morente - 14568476**
@@ -256,10 +255,7 @@ projeto2_submarino/
 │   └── skybox/             panorama oceânico equirretangular
 │
 └── tools/                ← offline (~1 300 linhas de Python)
-    ├── build_assets.py     pipeline de conversão .fbx/.blend/.obj brutos → assets/
-    ├── render_for_report.py  gera os screenshots deste README
-    ├── render_exterior_decor.py  rendizações de validação
-    └── smoke_test.py       teste rápido headless de boot do engine
+    └── build_assets.py     pipeline de conversão .fbx/.blend/.obj brutos → assets/
 ```
 
 ### Fluxo de um frame
@@ -284,23 +280,7 @@ download original era cor-pura.
 
 ---
 
-## 10. Reprodutibilidade dos screenshots
-
-Todas as imagens deste README podem ser regeradas em ~4 segundos
-com:
-
-```bash
-python tools/render_for_report.py
-```
-
-O script abre uma janela GLFW invisível, posiciona a câmera nas 12
-poses listadas no array `VIEWS` do próprio arquivo e salva os
-PNGs em `build/report/`. As poses estão calculadas para enquadrar
-exatamente os mesmos elementos mostrados acima.
-
----
-
-## 11. Observações finais
+## 10. Observações finais
 
 - O projeto usa **Python 3.12 especificamente** porque o
   `assimp_py` (responsável por ler `.fbx` / `.blend` no pipeline
