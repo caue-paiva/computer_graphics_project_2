@@ -58,6 +58,9 @@ Python **3.12**. Os assets já vêm pré-construídos em
 `assets/modelos/` e `assets/skybox/`, então não é necessário rodar o
 pipeline de build para executar.
 
+Caso o seu sistema tenha versões do python 3.13+, sem suporte para as dependências do projeto, é possível usar o pyenv para baixar outras versões do Python. O pyenv é uma ferramenta que permite instalar e gerenciar múltiplas versões do Python no mesmo sistema, facilitando a troca entre elas conforme a necessidade de cada projeto. Para instruções de instalação e uso,
+consulte este guia [prático](https://realpython.com/intro-to-pyenv/).
+
 ---
 
 ## 3. Controles
